@@ -1,6 +1,6 @@
 import { TeamDataResponse, TeamData } from "../handlers/types";
 
-export function mapTeamData(teamData, teamSchedule, teamStandings) {
+export function mapTeamData(teamData, teamSchedule, teamStandings): TeamDataResponse {
     const tRecord = teamRecord(teamStandings, teamData.teams[0].id)
     return {
         teamId: teamData.teams[0].id,

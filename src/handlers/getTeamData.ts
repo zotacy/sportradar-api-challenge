@@ -1,4 +1,5 @@
 import { mapTeamData } from "../mappers/teamData.map"
+import { convertToCSV } from "../utils"
 import { Season } from "./types"
 
 export default class TeamDataHandler {
@@ -49,17 +50,4 @@ async function getStandings(teamId: string, teamSeason:string) {
     const standings = await (await fetch(standingsEndpoint)).json();
     console.log(standings)
     return standings
-}
-
-export function convertToCSV(jsonResponse) {
-    const items = jsonResponse.items
-    const replacer = (key, value) => value === null ? '' : value 
-    const header = Object.keys(items[0])
-    const csv = [
-        header.join(','), 
-        ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
-        ].join('\r\n')
-
-    console.log(csv)
-    return csv
 }

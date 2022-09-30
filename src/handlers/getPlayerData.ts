@@ -1,3 +1,16 @@
+import { mapPlayerData } from "../mappers/playerData.map"
+import { convertToCSV } from "../utils"
+
+export default class PlayerData {
+    constructor(playerId, playerSeason){
+        const playerData = getPlayerData(playerId, playerSeason)
+        const playerStats = getPlayerStats(playerId, playerSeason)
+        
+        const playerDataResponse = mapPlayerData(playerData, playerStats)
+        return convertToCSV(playerDataResponse)
+    }
+}
+
 export async function getPlayerData(playerId: string, playerSeason:string){
     if (!playerId || !playerSeason){
         if(playerSeason.length !==8){
@@ -15,4 +28,11 @@ export async function getPlayerData(playerId: string, playerSeason:string){
     }
     const playerData = await response.json()
     console.log(playerData)
+}
+
+async function getPlayerStats(playerId: string, playerSeason:string) {
+    const playerStatsEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/people/${playerId}/stats?season=${playerSeason}&stats=statsSingleSeason`)
+    const playerStats = await (await fetch(playerStatsEndpoint)).json();
+    console.log(playerStats)
+    return playerStats
 }
