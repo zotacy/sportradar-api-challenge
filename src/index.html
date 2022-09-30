@@ -1,65 +1,16 @@
 <html>
+    <header>
+        <script type= "text/typescript" src="./handlers/getTeamData.ts"></script>
+    </header>
     <body>
         <legend>Retrieve Team Details</legend>
         <input type="number" id="teamId" placeholder="Team Id"/>
         <input type="text" id="teamSeason" placeholder="Season"/>
-        <button type="button" id="teambtn" onclick="getTeamData()">Team Data</button>
+        <button type="button" id="teambtn" onclick="getTeamData(teamId, teamSeason)">Team Data</button>
 
         <legend>Retrieve Player Details</legend>
         <input type="number" id="playerId" placeholder="Player Id"/>
         <input type="text" id="playerSeason" placeholder="Season"/>
-        <button type="button" id="playerbtn" onclick="getPlayerData()">Player Data</button>
-    
-
-    <script>
-        async function getTeamData(){
-            const teamId = document.getElementById("teamId").value
-            const teamSeason = document.getElementById("teamSeason").value
-            //TODO: Simplay season input to be 1 year instead of back-to-back years
-            if (!teamId || !teamSeason){
-                if(teamSeason.length !==8 || season <0){
-                    alert(`season should be formatted as a 8-digit year`)
-                    return
-                }
-                alert("Please enter both teamId and season")
-                return;
-            }
-            const teamEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/teams/${teamId}?season=${teamSeason}`)
-            const response = await fetch(teamEndpoint);
-            if (response.status === 404) {
-                alert(`Inputs were not valid`)
-                return
-            }
-            const teamData = await response.json()
-            console.log(teamData)
-            let csvTeamContent = "data:text/csv;charset=utf-8," 
-            teamData.map(e => e.join(",")).join("\n")
-            console.log(csvTeamContent)
-        }
-        async function getPlayerData(){
-            const playerId = document.getElementById("playerId").value
-            const playerSeason = document.getElementById("playerSeason").value
-            //TODO: Simplay season input to be 1 year instead of back-to-back years
-            if (!playerId || !playerSeason){
-                if(playerSeason.length !==8 || playerSeason <0){
-                    alert(`season should be formatted as a 8-digit year`)
-                    return
-                }
-                alert("Please enter both teamId and season")
-                return;
-            }
-            const playerEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/people/${playerId}?season=${playerSeason}`)
-            const response = await fetch(playerEndpoint);
-            if (response.status === 404) {
-                alert(`Inputs were not valid`)
-                return
-            }
-            const playerData = await response.json()
-            console.log(playerData)
-            let csvPlayerContent = "data:text/csv;charset=utf-8," 
-            playerData.map(e => e.join(",")).join("\n")
-            console.log(csvPlayerContent)
-        }
-    </script>
+        <button type="button" id="playerbtn" onclick="getPlayerData(playerId,playerSeason)">Player Data</button>
     </body>
 </html>
