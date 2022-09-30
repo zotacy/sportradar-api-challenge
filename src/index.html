@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <legend>Retrieve Team Details</legend>
+        <input type="number" id="teamId" placeholder="Team Id"/>
+        <input type="text" id="teamSeason" placeholder="Season"/>
+        <button type="button" id="teambtn" onclick="getTeamData()">Team Data</button>
+
+        <legend>Retrieve Player Details</legend>
+        <input type="number" id="playerId" placeholder="Player Id"/>
+        <input type="text" id="playerSeason" placeholder="Season"/>
+        <button type="button" id="playerbtn" onclick="getPlayerData()">Player Data</button>
+    
+
+    <script>
+        async function getTeamData(){
+            return {teamData:"Team Data"}
+        }
+        async function getPlayerData(){
+            return {playerData:"Player Data"}
+        }
+    </script>
+    </body>
+</html>
