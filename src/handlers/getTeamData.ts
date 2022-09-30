@@ -1,6 +1,5 @@
 import { mapTeamData } from "../mappers/teamData.map"
 import { convertToCSV } from "../utils"
-import { Season } from "./types"
 
 export default class TeamDataHandler {
     constructor(teamId, teamSeason){
@@ -11,7 +10,6 @@ export default class TeamDataHandler {
         const response = mapTeamData(teamData, schedule, standings)
         return convertToCSV(response)
     }
-    
 }
 
 async function getTeamData(teamId: string, teamSeason:string){
@@ -36,7 +34,7 @@ async function getTeamData(teamId: string, teamSeason:string){
 
 async function getSchedule(teamId: string, teamSeason:string) {
     const seasonsEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${teamSeason}`)
-    const seasonData: Season = await (await fetch(seasonsEndpoint)).json();
+    const seasonData = await (await fetch(seasonsEndpoint)).json();
     console.log(seasonData)
 
     const scheduleEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${teamId}&startDate=${seasonData.seasons[0].regularSeasonStartDate}&endDate=${seasonData.seasons[0].regularSeasonEndDate}`)
