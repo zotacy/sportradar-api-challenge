@@ -1,17 +1,94 @@
 <!DOCTYPE html>
     <head>
-        <script type="text/javascript" src="./handlers/getTeamData.ts" defer></script>
-        <script type="text/javascript" src="./handlers/getPlayerData.ts" defer></script>
+        <script>var exports = {};</script>
+        <script> type="module"; src="./mappers/teamData.js" </script>
     </head>
     <body>
         <legend>Retrieve Team Details</legend>
         <input type="number" id="teamId" placeholder="Team Id"/>
         <input type="text" id="teamSeason" placeholder="Season"/>
-        <button type="button" id="teambtn" onclick="getTeamData(teamId, teamSeason)">Team Data</button>
+        <button type="button" id="teambtn" onclick="mapTeamData(teamId, teamSeason)">Team Data</button>
 
         <legend>Retrieve Player Details</legend>
         <input type="number" id="playerId" placeholder="Player Id"/>
         <input type="text" id="playerSeason" placeholder="Season"/>
         <button type="button" id="playerbtn" onclick="getPlayerData(playerId,playerSeason)">Player Data</button>
+
+        <script>
+            async function getTeamData(){
+                const teamId = document.getElementById('teamId').value
+                const teamSeason = document.getElementById('teamSeason').value
+                const teamEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/teams/${teamId}?season=${teamSeason}`)
+
+                if (!teamId || !teamSeason){
+                    if(teamSeason.length !==8){
+                        alert(`season should be formatted as a 8-digit back-to-back years`)
+                        return
+                    }
+                    alert("Please enter both teamId and season")
+                    return;
+                }
+                
+                const response = await fetch(teamEndpoint);
+                if (response.status === 404) {
+                    alert(`Inputs were not valid`)
+                    return
+                }
+                const teamData = await response.json()
+
+                return teamData
+            }
+
+            async function getSchedule() {
+                const teamId = document.getElementById('teamId').value
+                const teamSeason = document.getElementById('teamSeason').value
+                const scheduleEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/schedule?teamId=${teamId}&season=${teamSeason}`)
+
+                const teamSchedule = await (await fetch(scheduleEndpoint)).json();
+
+                return teamSchedule
+            }
+
+            async function getStandings() {
+                const teamId = document.getElementById('teamId').value
+                const teamSeason = document.getElementById('teamSeason').value
+                const standingsEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/standings?teamId=${teamId}&season=${teamSeason}`)
+
+                const teamStandings = await (await fetch(standingsEndpoint)).json();
+
+                return teamStandings
+            }
+
+            async function mapTeamData(){
+                const teamData = getTeamData(teamId, teamSeason)
+                const teamSchedule = getSchedule(teamId, teamSeason)
+                const teamStandings = getStandings(teamId, teamSeason)
+
+                const teamRecord= ()=> {
+                    let tRecords = []
+                    let teamRecords = teamStandings.records[3].teamsRecords
+                    for (let i=0; i<teamRecords.length; i++){
+                        if(teamRecords[i].team.id === teamId){
+                            tRecord.push(teamRecords[i])
+                        } else {
+                            throw new Error("no records")
+                        }
+                    }
+                }
+                console.log(teamData, teamSchedule, teamStandings, teamRecord)
+                return {
+                    teamId: teamData.teams[0].id,
+                    teamName: teamData.teams[0].teamName,
+                    teamVenue: teamData.teams[0].venue.name,
+                    gamesPlayed: teamSchedule.totalGames,
+                    wins: teamRecord.leagueRecord.wins,
+                    losses: teamRecord.leagueRecord.losses,
+                    points: teamRecord.goalsScored,
+                    goalsPerGame: teamRecord.goalsScored/teamSchedule.totalGames,
+                    seasonfirstGameDate: teamSchedule.dates[0].date,
+                    seasonfirstOpponentName: teamSchedule.dates[0].games[1].teams.team.name
+                }
+            }
+        </script>
     </body>
 </html>

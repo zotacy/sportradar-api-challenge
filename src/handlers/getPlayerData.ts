@@ -11,7 +11,7 @@ export default class PlayerData {
     }
 }
 
-export async function getPlayerData(playerId: string, playerSeason:string){
+export async function getPlayerData(playerId, playerSeason){
     if (!playerId || !playerSeason){
         if(playerSeason.length !==8){
             alert(`season should be formatted as a 8-digit year`)
@@ -30,7 +30,7 @@ export async function getPlayerData(playerId: string, playerSeason:string){
     console.log(playerData)
 }
 
-async function getPlayerStats(playerId: string, playerSeason:string) {
+async function getPlayerStats(playerId, playerSeason) {
     const playerStatsEndpoint = new URL(`https://statsapi.web.nhl.com/api/v1/people/${playerId}/stats?season=${playerSeason}&stats=statsSingleSeason`)
     const playerStats = await (await fetch(playerStatsEndpoint)).json();
     console.log(playerStats)
